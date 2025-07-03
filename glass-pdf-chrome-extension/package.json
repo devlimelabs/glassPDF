@@ -28,8 +28,8 @@
     "typescript": "^5.2.2",
     "vite": "^4.4.9",
     "vitest": "^3.2.4",
-    "vitest-bdd": "^1.0.0",
     "@testing-library/react": "^14.0.0",
-    "jsdom": "^22.1.0"
+    "jsdom": "^22.1.0",
+    "@testing-library/jest-dom": "^6.1.4"
   }
 }
