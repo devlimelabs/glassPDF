@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Extension Icons</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .icon-preview { margin: 20px; display: inline-block; text-align: center; }
+        canvas { border: 1px solid #ccc; margin: 10px; }
+    </style>
+</head>
+<body>
+    <h2>Chrome Extension Icon Generator</h2>
+    <div id="icons"></div>
+    
+    <script>
+        function createIcon(size) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            
+            // Glass-morphic background
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, 'rgba(99, 102, 241, 0.8)');
+            gradient.addColorStop(0.5, 'rgba(168, 85, 247, 0.8)');
+            gradient.addColorStop(1, 'rgba(239, 68, 68, 0.8)');
+            
+            // Draw background circle
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(size/2, size/2, size/2 - 2, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Add glass effect border
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Draw PDF document icon
+            const docWidth = size * 0.5;
+            const docHeight = size * 0.6;
+            const docX = (size - docWidth) / 2;
+            const docY = (size - docHeight) / 2;
+            
+            // Document body
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.fillRect(docX, docY, docWidth, docHeight);
+            
+            // Document fold
+            const foldSize = size * 0.1;
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.beginPath();
+            ctx.moveTo(docX + docWidth - foldSize, docY);
+            ctx.lineTo(docX + docWidth, docY + foldSize);
+            ctx.lineTo(docX + docWidth - foldSize, docY + foldSize);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Document lines
+            ctx.strokeStyle = 'rgba(99, 102, 241, 0.6)';
+            ctx.lineWidth = 1;
+            const lineSpacing = size * 0.08;
+            for (let i = 1; i <= 3; i++) {
+                const y = docY + lineSpacing + (i * lineSpacing);
+                ctx.beginPath();
+                ctx.moveTo(docX + size * 0.1, y);
+                ctx.lineTo(docX + docWidth - size * 0.1, y);
+                ctx.stroke();
+            }
+            
+            // PDF text
+            if (size >= 32) {
+                ctx.fillStyle = 'rgba(239, 68, 68, 0.8)';
+                ctx.font = `bold ${size * 0.12}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.fillText('PDF', size/2, docY + docHeight + size * 0.15);
+            }
+            
+            return canvas;
+        }
+        
+        function downloadCanvas(canvas, filename) {
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        // Create all icon sizes
+        const sizes = [16, 32, 48, 128];
+        const container = document.getElementById('icons');
+        
+        sizes.forEach(size => {
+            const div = document.createElement('div');
+            div.className = 'icon-preview';
+            
+            const title = document.createElement('h4');
+            title.textContent = `${size}x${size}`;
+            div.appendChild(title);
+            
+            const canvas = createIcon(size);
+            div.appendChild(canvas);
+            
+            const button = document.createElement('button');
+            button.textContent = 'Download';
+            button.onclick = () => downloadCanvas(canvas, `icon${size}.png`);
+            div.appendChild(button);
+            
+            container.appendChild(div);
+        });
+    </script>
+</body>
+</html>

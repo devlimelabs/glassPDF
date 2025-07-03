@@ -1,0 +1,266 @@
+/* PDF Generator Pro - Content Script Overlay Styles */
+
+/* Base overlay container */
+#pdf-generator-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: none !important;
+  z-index: 2147483647 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif !important;
+}
+
+/* Element selection styles */
+.pdf-generator-selectable {
+  cursor: crosshair !important;
+  transition: all 0.2s ease !important;
+}
+
+.pdf-generator-selectable:hover {
+  outline: 2px solid #3b82f6 !important;
+  outline-offset: 2px !important;
+  background-color: rgba(59, 130, 246, 0.1) !important;
+}
+
+.pdf-generator-selected {
+  outline: 2px solid #10b981 !important;
+  outline-offset: 2px !important;
+  background-color: rgba(16, 185, 129, 0.15) !important;
+}
+
+/* Tooltip styles */
+.pdf-generator-overlay-tooltip {
+  position: absolute !important;
+  background: rgba(0, 0, 0, 0.9) !important;
+  color: white !important;
+  padding: 6px 10px !important;
+  border-radius: 6px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  pointer-events: none !important;
+  z-index: 2147483648 !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Page break markers */
+.pdf-generator-page-break {
+  position: absolute !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 2px !important;
+  background: linear-gradient(90deg, #ef4444, #f97316) !important;
+  z-index: 2147483647 !important;
+  pointer-events: auto !important;
+  cursor: ns-resize !important;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.5) !important;
+}
+
+.pdf-generator-page-break::before {
+  content: '' !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: -1px !important;
+  width: 100% !important;
+  height: 4px !important;
+  background: transparent !important;
+  cursor: ns-resize !important;
+}
+
+.pdf-generator-page-break:hover {
+  background: linear-gradient(90deg, #dc2626, #ea580c) !important;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.7) !important;
+}
+
+/* Drag handle for page breaks */
+.pdf-generator-page-break .drag-handle {
+  position: absolute !important;
+  right: 20px !important;
+  top: -10px !important;
+  width: 20px !important;
+  height: 20px !important;
+  background: #ef4444 !important;
+  border-radius: 50% !important;
+  cursor: ns-resize !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: white !important;
+  font-size: 10px !important;
+  font-weight: bold !important;
+  border: 2px solid white !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.2s ease !important;
+}
+
+.pdf-generator-page-break .drag-handle:hover {
+  background: #dc2626 !important;
+  transform: scale(1.1) !important;
+}
+
+/* Instructions panel */
+#pdf-generator-instructions {
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  background: rgba(0, 0, 0, 0.95) !important;
+  color: white !important;
+  padding: 20px !important;
+  border-radius: 12px !important;
+  font-size: 14px !important;
+  max-width: 320px !important;
+  z-index: 2147483648 !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+  pointer-events: auto !important;
+}
+
+#pdf-generator-instructions .title {
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  margin-bottom: 12px !important;
+  color: #3b82f6 !important;
+}
+
+#pdf-generator-instructions .instruction {
+  margin-bottom: 8px !important;
+  line-height: 1.4 !important;
+}
+
+#pdf-generator-instructions button {
+  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+  color: white !important;
+  border: none !important;
+  padding: 8px 16px !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  margin-top: 12px !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+  width: 100% !important;
+}
+
+#pdf-generator-instructions button:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
+}
+
+/* Page break controls */
+#pdf-generator-page-break-controls {
+  position: fixed !important;
+  bottom: 20px !important;
+  left: 20px !important;
+  background: rgba(0, 0, 0, 0.95) !important;
+  color: white !important;
+  padding: 20px !important;
+  border-radius: 12px !important;
+  font-size: 14px !important;
+  z-index: 2147483648 !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+  pointer-events: auto !important;
+  min-width: 280px !important;
+}
+
+#pdf-generator-page-break-controls .title {
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  margin-bottom: 12px !important;
+  color: #f59e0b !important;
+}
+
+#pdf-generator-page-break-controls .info {
+  margin-bottom: 8px !important;
+  line-height: 1.4 !important;
+  color: #d1d5db !important;
+}
+
+#pdf-generator-page-break-controls .buttons {
+  display: flex !important;
+  gap: 10px !important;
+  margin-top: 16px !important;
+}
+
+#pdf-generator-page-break-controls button {
+  border: none !important;
+  padding: 8px 16px !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+  flex: 1 !important;
+}
+
+#pdf-generator-page-break-controls button.secondary {
+  background: linear-gradient(135deg, #6b7280, #4b5563) !important;
+  color: white !important;
+}
+
+#pdf-generator-page-break-controls button.secondary:hover {
+  background: linear-gradient(135deg, #4b5563, #374151) !important;
+  transform: translateY(-1px) !important;
+}
+
+#pdf-generator-page-break-controls button.primary {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  color: white !important;
+}
+
+#pdf-generator-page-break-controls button.primary:hover {
+  background: linear-gradient(135deg, #059669, #047857) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+}
+
+/* Selection counter */
+#selection-count {
+  font-weight: bold !important;
+  color: #10b981 !important;
+}
+
+/* Animations */
+@keyframes pdf-generator-fade-in {
+  from {
+    opacity: 0 !important;
+    transform: translateY(10px) !important;
+  }
+  to {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+}
+
+#pdf-generator-instructions,
+#pdf-generator-page-break-controls {
+  animation: pdf-generator-fade-in 0.3s ease-out !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  #pdf-generator-instructions {
+    top: 10px !important;
+    right: 10px !important;
+    left: 10px !important;
+    max-width: none !important;
+    padding: 16px !important;
+  }
+  
+  #pdf-generator-page-break-controls {
+    bottom: 10px !important;
+    left: 10px !important;
+    right: 10px !important;
+    min-width: auto !important;
+    padding: 16px !important;
+  }
+  
+  #pdf-generator-page-break-controls .buttons {
+    flex-direction: column !important;
+  }
+}
+

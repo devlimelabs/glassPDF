@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "Glass PDF",
+  "version": "1.0.0",
+  "description": "Generate beautiful PDFs from any web page.",
+  "options_page": "src/options/index.html",
+  "background": {
+    "service_worker": "assets/background.js"
+  },
+  "action": {
+    "default_popup": "src/popup/index.html",
+    "default_icon": {
+      "16": "assets/icon16.png",
+      "32": "assets/icon32.png",
+      "48": "assets/icon48.png",
+      "128": "assets/icon128.png"
+    },
+    "default_title": "Glass PDF",
+    "default_width": 400,
+    "default_height": 550
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["assets/content.js"]
+    }
+  ],
+  "permissions": ["activeTab", "storage", "tabs", "downloads", "scripting"],
+  "host_permissions": ["<all_urls>"],
+  "web_accessible_resources": [
+    {
+      "resources": ["viewer/index.html", "assets/*.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

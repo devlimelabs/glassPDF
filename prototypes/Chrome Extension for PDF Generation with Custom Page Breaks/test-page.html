@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Generator Pro - Test Page</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #1f2937;
+            border-bottom: 3px solid #3b82f6;
+            padding-bottom: 10px;
+        }
+        
+        h2 {
+            color: #374151;
+            margin-top: 30px;
+        }
+        
+        .highlight {
+            background: #fef3c7;
+            padding: 15px;
+            border-left: 4px solid #f59e0b;
+            margin: 20px 0;
+        }
+        
+        .code-block {
+            background: #f3f4f6;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        .image-placeholder {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #e5e7eb, #d1d5db);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        
+        .fixed-element {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #ef4444;
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            z-index: 1000;
+        }
+        
+        .transform-element {
+            transform: rotate(5deg) scale(1.1);
+            background: #8b5cf6;
+            color: white;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        
+        .overflow-element {
+            width: 120%;
+            background: #06b6d4;
+            color: white;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            border: 1px solid #d1d5db;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: #f9fafb;
+            font-weight: 600;
+        }
+        
+        .page-break {
+            page-break-before: always;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            .fixed-element {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="fixed-element">Fixed Element (should cause issues)</div>
+    
+    <div class="container">
+        <h1>PDF Generator Pro Test Page</h1>
+        
+        <p>This is a comprehensive test page designed to test various features of the PDF Generator Pro Chrome extension. It includes different types of content, layouts, and potential rendering challenges.</p>
+        
+        <div class="highlight">
+            <strong>Test Instructions:</strong> Use this page to test the PDF Generator Pro extension. Try both Standard and Pixel Perfect rendering modes, experiment with page breaks, and use the element selection tool to identify potential issues.
+        </div>
+        
+        <h2>Text Content</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        
+        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        
+        <h2>Code Block</h2>
+        <div class="code-block">
+function generatePDF() {
+    const settings = {
+        format: 'A4',
+        orientation: 'portrait',
+        margins: { top: 0.5, right: 0.5, bottom: 0.5, left: 0.5 }
+    };
+    
+    return chrome.tabs.printToPDF(tabId, settings);
+}
+        </div>
+        
+        <h2>Image Placeholder</h2>
+        <div class="image-placeholder">
+            [Image Placeholder - 800x200px]
+        </div>
+        
+        <h2>Problematic Elements</h2>
+        <p>The following elements are designed to test the extension's ability to identify potential PDF rendering issues:</p>
+        
+        <div class="transform-element">
+            This element has CSS transforms applied (rotation and scale). It should be highlighted in debug mode.
+        </div>
+        
+        <div class="overflow-element">
+            This element overflows the viewport width and should be flagged by the debug tool.
+        </div>
+        
+        <h2>Table Content</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>Standard Mode</th>
+                    <th>Pixel Perfect Mode</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Text Rendering</td>
+                    <td>✅ Excellent</td>
+                    <td>✅ Excellent</td>
+                    <td>Both modes handle text well</td>
+                </tr>
+                <tr>
+                    <td>Background Colors</td>
+                    <td>⚠️ Optional</td>
+                    <td>✅ Always</td>
+                    <td>Enable "Print Backgrounds" for standard mode</td>
+                </tr>
+                <tr>
+                    <td>CSS Transforms</td>
+                    <td>❌ Limited</td>
+                    <td>✅ Full Support</td>
+                    <td>Pixel perfect mode captures visual output</td>
+                </tr>
+                <tr>
+                    <td>Fixed Elements</td>
+                    <td>❌ Issues</td>
+                    <td>✅ Handled</td>
+                    <td>Fixed positioning can cause problems</td>
+                </tr>
+                <tr>
+                    <td>Performance</td>
+                    <td>✅ Fast</td>
+                    <td>⚠️ Slower</td>
+                    <td>Standard mode is significantly faster</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <h2>Long Content Section</h2>
+        <p>This section contains a lot of text to test page breaking functionality. You can use the page break preview feature to see where pages will split and adjust the breaks manually.</p>
+        
+        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+        
+        <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+        
+        <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.</p>
+        
+        <p>Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur.</p>
+        
+        <div class="page-break"></div>
+        
+        <h2>Second Page Content</h2>
+        <p>This content should appear on a new page when using CSS page breaks. The page break above forces a new page in print mode.</p>
+        
+        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.</p>
+        
+        <p>Similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.</p>
+        
+        <h2>Testing Checklist</h2>
+        <p>Use this checklist to verify the extension's functionality:</p>
+        
+        <ul>
+            <li>✅ Extension popup opens and displays page information</li>
+            <li>✅ Standard PDF generation works</li>
+            <li>✅ Pixel Perfect PDF generation works</li>
+            <li>✅ Page break preview shows break lines</li>
+            <li>✅ Page breaks can be dragged and adjusted</li>
+            <li>✅ Element selection mode highlights elements</li>
+            <li>✅ Element tooltips show information on hover</li>
+            <li>✅ Debug mode identifies problematic elements</li>
+            <li>✅ PDF viewer opens in new tab</li>
+            <li>✅ PDF can be downloaded from viewer</li>
+            <li>✅ Settings are saved and restored</li>
+            <li>✅ Keyboard shortcuts work</li>
+        </ul>
+        
+        <h2>Conclusion</h2>
+        <p>This test page provides a comprehensive evaluation of the PDF Generator Pro extension's capabilities. It includes various content types, layout challenges, and interactive elements to ensure the extension works correctly across different scenarios.</p>
+        
+        <p>For best results, test both rendering modes and experiment with different settings to understand the trade-offs between speed and accuracy.</p>
+    </div>
+</body>
+</html>
+
