@@ -1,211 +1,105 @@
-# CLAUDE.md - glassPDF Project Instructions
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
-glassPDF is a Chrome Extension for converting web pages to PDF with advanced features like interactive page break previews, element exclusion, and multiple PDF generation methods.
 
-## Technology Stack
-- **Chrome Extension**: Manifest V3
-- **Framework**: React 18 with TypeScript
-- **Styling**: Tailwind CSS (utility-first)
-- **Build Tool**: Vite
-- **Testing**: Vitest with React Testing Library
-- **PDF Generation**: 
-  - Primary: Chrome's `tabs.print()` API
-  - Secondary: html2canvas + jspdf for pixel-perfect rendering
+glassPDF is a Chrome extension that converts web pages to PDF with interactive page break control. It uses a modern glass-morphic UI design and offers two PDF generation approaches: Chrome's native print API (primary) and a canvas-based screenshot stitching fallback.
 
-## Project Structure
-```
-glass-pdf-chrome-extension/
-├── src/
-│   ├── background/     # Service worker for PDF generation
-│   ├── content/        # Content script for DOM manipulation
-│   ├── popup/          # React popup UI
-│   ├── options/        # React options page
-│   ├── viewer/         # PDF viewer page
-│   ├── utils/          # Shared utilities
-│   └── __tests__/      # Test files
-├── dist/               # Build output
-└── public/            # Static assets
-```
+## Key Development Commands
 
-## Development Commands
 ```bash
-# Install dependencies
-npm install
+# Chrome Extension (main project)
+cd glass-pdf-chrome-extension
+npm run dev        # Start development server with HMR
+npm run build      # Build for production
+npm test           # Run tests with Vitest
+npm run preview    # Preview production build
 
-# Development mode (watches for changes)
-npm run dev
-
-# Build for production
-npm run build
-
-# Run tests
-npm test
-
-# Preview build
-npm run preview
+# Showcase Website
+cd glass-pdf-showcase-website
+pnpm dev          # Start development server
+pnpm build        # Build for production
 ```
 
-## Key Architectural Decisions
+## Architecture & Code Structure
 
-### 1. Dual PDF Generation Approach
-- **Primary Method**: Uses Chrome's native `tabs.print()` API for fast, efficient PDF generation
-- **Fallback Method**: Canvas-based screenshot stitching with html2canvas for pixel-perfect rendering when print API fails
+### Chrome Extension Architecture (Manifest V3)
 
-### 2. Component Architecture
-- All UI components use React with TypeScript for type safety
-- Popup and options pages are separate React apps with shared components
-- Content script handles DOM manipulation and page break previews
+The extension follows a multi-context architecture:
 
-### 3. Message Passing Pattern
+1. **Background Service Worker** (`src/background/background.ts`):
+   - Handles extension lifecycle and message routing
+   - Manages tab interactions and PDF generation triggers
+
+2. **Content Scripts** (`src/content/`):
+   - `contentScript.ts`: Main content script for interacting with web pages
+   - `pageBreakManager.ts`: Manages interactive page break functionality
+   - Injected into web pages to enable PDF conversion features
+
+3. **UI Contexts** (React-based):
+   - **Popup** (`src/popup/`): Quick access interface for PDF conversion
+   - **Options** (`src/options/`): Settings page for user preferences
+   - **Viewer** (`src/viewer/`): PDF preview and customization interface
+
+### PDF Generation Approach
+
+The extension uses a dual approach for maximum compatibility:
+
+1. **Primary Method**: Chrome's native print API
+   - Leverages browser's built-in PDF generation
+   - Better text selection and smaller file sizes
+
+2. **Fallback Method**: Canvas-based screenshot stitching
+   - Uses html2canvas + jsPDF
+   - Located in `src/utils/pdfGenerator.ts`
+   - Handles cases where print API is unavailable
+
+### Message Passing Pattern
+
+Communication between different parts of the extension:
 ```typescript
-// Content script → Background
-chrome.runtime.sendMessage({ action: 'generatePdf', options });
+// Content to Background
+chrome.runtime.sendMessage({ action: 'generatePDF', data });
 
-// Background → Content script
-chrome.tabs.sendMessage(tabId, { action: 'captureContent' });
+// Background to Content
+chrome.tabs.sendMessage(tabId, { action: 'getPageContent' });
 ```
 
-## Testing Strategy
-- Unit tests for utility functions and React components
-- Integration tests for Chrome API interactions
-- Test setup in `src/__tests__/setup.ts`
-- Mock Chrome APIs for testing
+### Testing Approach
 
-## Chrome Extension Specific Guidelines
+- **Framework**: Vitest with React Testing Library
+- **Environment**: jsdom for browser simulation
+- **Test Location**: `src/__tests__/`
+- **Setup File**: `src/__tests__/setup.ts`
+- **Run Single Test**: `npm test -- path/to/test.spec.ts`
 
-### 1. Manifest V3 Requirements
-- Service workers instead of background pages
-- No remote code execution
-- Declarative net request API for network modifications
+### Build Configuration
 
-### 2. Permissions Management
-- Only request necessary permissions in manifest.json
-- Use optional permissions where possible
-- Current permissions: tabs, activeTab, storage
+The project uses Vite with multiple entry points:
+- `popup.html` → Extension popup
+- `options.html` → Settings page
+- `viewer.html` → PDF viewer
+- `background.js` → Service worker (separate build)
+- `contentScript.js` → Content script (separate build)
 
-### 3. Content Security Policy
-- Strict CSP for extension pages
-- No inline scripts or styles
-- All resources must be bundled
+### Key Technical Decisions
 
-## UI/UX Conventions
+1. **TypeScript Strict Mode**: Enabled for better type safety
+2. **Glass-morphic Design**: Modern UI with transparency effects using Tailwind CSS
+3. **Component Organization**: UI components in `src/components/ui/`
+4. **Interactive Features**: 
+   - Drag-and-drop page breaks with visual feedback
+   - Element exclusion from PDFs
+   - Real-time preview updates
 
-### 1. Glass-morphic Design
-- Semi-transparent backgrounds with backdrop blur
-- Subtle gradients and shadows
-- Consistent border radius (0.5rem default)
+### Development Guidelines
 
-### 2. Interactive Features
-- Drag-and-drop page break markers
-- Click-to-exclude element selection
-- Real-time preview updates
+1. **Message Handling**: Always validate messages between contexts for security
+2. **State Management**: Use React hooks for UI state, Chrome storage API for persistence
+3. **Error Handling**: Gracefully handle PDF generation failures with user feedback
+4. **Performance**: Minimize content script impact on page performance
 
-### 3. Toast Notifications
-- Use Sonner for user feedback
-- Success/error states for all actions
-- Non-blocking notifications
+### Current Project Status
 
-## Code Style Guidelines
-
-### 1. TypeScript Conventions
-```typescript
-// Use interfaces for object shapes
-interface PdfOptions {
-  format: 'A4' | 'Letter';
-  orientation: 'portrait' | 'landscape';
-  margins: number;
-}
-
-// Use type for unions and primitives
-type PdfFormat = 'A4' | 'Letter';
-```
-
-### 2. React Patterns
-```typescript
-// Prefer function components with hooks
-const PdfButton: React.FC<Props> = ({ onClick }) => {
-  const [loading, setLoading] = useState(false);
-  // ...
-};
-
-// Use custom hooks for logic extraction
-const usePdfGeneration = () => {
-  // PDF generation logic
-};
-```
-
-### 3. File Naming
-- Components: PascalCase (e.g., `PdfButton.tsx`)
-- Utilities: camelCase (e.g., `pdfGenerator.ts`)
-- Tests: `*.test.ts` or `*.test.tsx`
-
-## Git Workflow
-
-### Commit Message Format
-Use conventional commits:
-```
-feat: add interactive page break preview
-fix: resolve pdf generation memory leak
-test: add unit tests for pdf utilities
-docs: update setup instructions
-```
-
-### Branch Strategy
-- `main`: Production-ready code
-- Feature branches: `feat/feature-name`
-- Bug fixes: `fix/issue-description`
-
-## Performance Considerations
-
-### 1. Memory Management
-- Clean up event listeners in content scripts
-- Dispose of canvas elements after PDF generation
-- Use weak references for DOM element storage
-
-### 2. Bundle Size
-- Code split between popup, options, and viewer
-- Lazy load heavy dependencies (html2canvas, jspdf)
-- Tree-shake unused utilities
-
-### 3. Runtime Performance
-- Debounce resize events in content script
-- Use requestAnimationFrame for smooth animations
-- Minimize DOM manipulations
-
-## Security Best Practices
-
-### 1. Input Validation
-- Sanitize all user inputs
-- Validate PDF options before processing
-- Prevent XSS in injected content
-
-### 2. Chrome API Usage
-- Always check for API availability
-- Handle permission denials gracefully
-- Use message validation between scripts
-
-## Debugging Tips
-
-### 1. Extension Development
-- Use Chrome DevTools for popup/options pages
-- Check service worker logs in chrome://extensions
-- Use console.log with prefixes for different scripts
-
-### 2. Common Issues
-- Content script not injecting: Check manifest permissions
-- PDF generation failing: Verify tab permissions
-- Message passing errors: Check sender/receiver setup
-
-## Future Enhancements (from PROJECT_PLAN.md)
-- [ ] Task 3.5: Prepare for Chrome Web Store submission
-- [ ] Add batch PDF generation for multiple tabs
-- [ ] Implement cloud storage integration
-- [ ] Add PDF annotation features
-- [ ] Support for more PDF formats and sizes
-
-## Related Resources
-- [Chrome Extension Docs](https://developer.chrome.com/docs/extensions/mv3/)
-- [Vite Documentation](https://vitejs.dev/)
-- [React TypeScript Guide](https://react-typescript-cheatsheet.netlify.app/)
-- [Tailwind CSS Docs](https://tailwindcss.com/docs)
+The extension is feature-complete with only Chrome Web Store submission remaining (Task 3.5). All core functionality including interactive page breaks, element exclusion, and dual PDF generation methods are implemented and tested.
